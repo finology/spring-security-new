@@ -29,6 +29,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -93,10 +94,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 默认编码算法的 Id
         val idForEncode = "bcrypt";
         // 要支持的多种编码器
-        val encoders = Map.of(
-            idForEncode, new BCryptPasswordEncoder(),
-            "SHA-1", new MessageDigestPasswordEncoder("SHA-1")
-        );
+//        val encoders = Map.of(
+//            idForEncode, new BCryptPasswordEncoder(),
+//            "SHA-1", new MessageDigestPasswordEncoder("SHA-1")
+//        );
+        Map<String, PasswordEncoder> encoders = new HashMap<>();
+        encoders.put(idForEncode, new BCryptPasswordEncoder());
+        encoders.put("SHA-1", new MessageDigestPasswordEncoder("SHA-1"));
         return new DelegatingPasswordEncoder(idForEncode, encoders);
     }
 
@@ -115,10 +119,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             res.setStatus(HttpStatus.UNAUTHORIZED.value());
             res.setContentType(MediaType.APPLICATION_JSON_VALUE);
             res.setCharacterEncoding("UTF-8");
-            val errData = Map.of(
-                "title", "认证失败",
-                "details", exp.getMessage()
-            );
+//            val errData = Map.of(
+//                "title", "认证失败",
+//                "details", exp.getMessage()
+//            );
+            Map<String, String> errData = new HashMap<>();
+            errData.put("title", "认证失败");
+            errData.put("details", exp.getMessage());
             res.getWriter().println(objectMapper.writeValueAsString(errData));
         };
     }

@@ -29,6 +29,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -85,6 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .userDetailsService(userDetailsServiceImpl) // 配置 AuthenticationManager 使用 userService
             .passwordEncoder(passwordEncoder()) // 配置 AuthenticationManager 使用 userService
             .userDetailsPasswordManager(userDetailsPasswordServiceImpl); // 配置密码自动升级服务
+
     }
 
     @Bean
@@ -103,10 +105,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 默认编码算法的 Id
         val idForEncode = "bcrypt";
         // 要支持的多种编码器
-        val encoders = Map.of(
-            idForEncode, new BCryptPasswordEncoder(),
-            "SHA-1", new MessageDigestPasswordEncoder("SHA-1")
-        );
+//        val encoders = Map.of(
+//            idForEncode, new BCryptPasswordEncoder(),
+//            "SHA-1", new MessageDigestPasswordEncoder("SHA-1")
+//        );
+        Map<String, PasswordEncoder> encoders = new HashMap<>();
+        encoders.put(idForEncode, new BCryptPasswordEncoder());
+        encoders.put("SHA-1", new MessageDigestPasswordEncoder("SHA-1"));
         return new DelegatingPasswordEncoder(idForEncode, encoders);
     }
 }

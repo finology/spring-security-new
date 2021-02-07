@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -91,10 +92,13 @@ public class LoginSecurityConfig extends WebSecurityConfigurerAdapter {
             res.setStatus(HttpStatus.UNAUTHORIZED.value());
             res.setContentType(MediaType.APPLICATION_JSON_VALUE);
             res.setCharacterEncoding("UTF-8");
-            val errData = Map.of(
-                "title", "认证失败",
-                "details", exp.getMessage()
-            );
+//            val errData = Map.of(
+//                "title", "认证失败",
+//                "details", exp.getMessage()
+//            );
+            Map<String, String> errData = new HashMap<>();
+            errData.put("title", "认证失败");
+            errData.put("details", exp.getMessage());
             res.getWriter().println(objectMapper.writeValueAsString(errData));
         };
     }
